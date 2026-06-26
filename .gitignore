@@ -2,3 +2,9 @@ node_modules/
 *.log
 .DS_Store
 prototype/cache/
+
+# iOS
+Echo/Echo.xcodeproj/
+build/
+DerivedData/
+*.xcuserstate
