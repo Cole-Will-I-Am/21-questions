@@ -1,0 +1,16 @@
+name = "echo-api"
+main = "src/index.js"
+compatibility_date = "2026-06-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+# Echo backend: adaptive 21-question self-portrait engine over Ollama Cloud on D1.
+[[d1_databases]]
+binding = "DB"
+database_name = "echo-arena"
+database_id = "c45cb190-31fc-46c2-94a2-ef4d3302b037"
+
+# Production endpoint the iOS app talks to (manticthink.com zone, custom domain like the other apps).
+[[routes]]
+pattern = "echo-api.manticthink.com"
+custom_domain = true
