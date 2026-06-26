@@ -15,14 +15,14 @@ struct QuestionView: View {
             if let turn = store.turn {
                 VStack(alignment: .leading, spacing: Metrics.s4) {
                     if !turn.reaction.isEmpty {
-                        Text(turn.reaction)
+                        Text(turn.reaction.echoMarkdown)
                             .font(EType.echo).italic()
                             .foregroundStyle(Palette.indigo)
                             .fixedSize(horizontal: false, vertical: true)
                             .opacity(showReaction ? 1 : 0)
                             .offset(y: showReaction ? 0 : 8)
                     }
-                    Text(turn.question)
+                    Text(turn.question.echoMarkdown)
                         .font(EType.question)
                         .foregroundStyle(Palette.ink)
                         .lineSpacing(5)
@@ -76,7 +76,7 @@ struct QuestionView: View {
         VStack(spacing: Metrics.s2) {
             ForEach(opts, id: \.self) { o in
                 Button { store.submit(.chip(o)) } label: {
-                    Text(o).font(EType.body).foregroundStyle(Palette.ink)
+                    Text(o.echoMarkdown).font(EType.body).foregroundStyle(Palette.ink)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 14).padding(.horizontal, Metrics.s4)
                         .background(Palette.bgRaised)
@@ -91,9 +91,9 @@ struct QuestionView: View {
     private func sliderArea(_ labels: [String]) -> some View {
         VStack(spacing: Metrics.s3) {
             HStack {
-                Text(labels.first ?? "").font(EType.small).foregroundStyle(Palette.inkSoft)
+                Text((labels.first ?? "").echoMarkdown).font(EType.small).foregroundStyle(Palette.inkSoft)
                 Spacer()
-                Text(labels.count > 1 ? labels[1] : "").font(EType.small).foregroundStyle(Palette.inkSoft)
+                Text((labels.count > 1 ? labels[1] : "").echoMarkdown).font(EType.small).foregroundStyle(Palette.inkSoft)
             }
             Slider(value: $sliderVal, in: 0...100).tint(Palette.indigo)
             Button { store.submit(.slider(Int(sliderVal.rounded()))) } label: { continueLabel("Continue") }

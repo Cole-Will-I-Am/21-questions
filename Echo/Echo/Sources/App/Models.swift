@@ -1,5 +1,16 @@
 import Foundation
 
+// Render inline markdown (**bold**, *italic*, `code`) into an AttributedString, preserving
+// whitespace; falls back to the raw string. Reasoning models (deepseek-v4-flash) often format
+// with markdown, so all model-generated text is shown through this.
+extension String {
+    var echoMarkdown: AttributedString {
+        (try? AttributedString(markdown: self, options: .init(
+            interpretedSyntax: .inlineOnlyPreservingWhitespace,
+            failurePolicy: .returnPartiallyParsedIfPossible))) ?? AttributedString(self)
+    }
+}
+
 // DTOs matching echo-api responses.
 
 struct AccountResponse: Decodable {

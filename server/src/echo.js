@@ -4,7 +4,7 @@
 import { chatJSON } from "./ollama.js";
 import { sha256hex, randomToken } from "./auth.js";
 
-export const ECHO_MODEL = "glm-5.2";
+export const ECHO_MODEL = "deepseek-v4-flash";
 
 const ECHO_SYSTEM = `You are ECHO — a perceptive, slightly literary observer playing "21 Questions, inverted."
 Over exactly 21 questions you read ONE person: the player. Not an object — a human being.

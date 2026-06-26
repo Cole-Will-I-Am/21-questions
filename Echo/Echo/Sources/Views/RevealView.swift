@@ -29,7 +29,7 @@ struct RevealView: View {
     private func header(_ p: Portrait) -> some View {
         VStack(alignment: .leading, spacing: Metrics.s3) {
             Text("YOUR READ").font(EType.label).tracking(5).foregroundStyle(Palette.indigo)
-            Text(p.archetype).font(EType.title).foregroundStyle(Palette.ink)
+            Text(p.archetype.echoMarkdown).font(EType.title).foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
             FlowChips(p.traits)
         }
@@ -39,7 +39,7 @@ struct RevealView: View {
     private func section(_ title: String, _ body: String, show: Bool, accent: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: Metrics.s2) {
             Text(title).font(EType.label).tracking(2).foregroundStyle(accent ? Palette.indigo : Palette.inkSoft)
-            Text(body).font(EType.reveal).foregroundStyle(accent ? Palette.ink : Palette.ink.opacity(0.92))
+            Text(body.echoMarkdown).font(EType.reveal).foregroundStyle(accent ? Palette.ink : Palette.ink.opacity(0.92))
                 .lineSpacing(5).fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -51,7 +51,7 @@ struct RevealView: View {
     }
 
     private func quote(_ q: String, show: Bool) -> some View {
-        Text("“\(q)”")
+        Text("“\(q)”".echoMarkdown)
             .font(EType.serif(24, .semibold)).italic()
             .foregroundStyle(Palette.indigo)
             .fixedSize(horizontal: false, vertical: true)
@@ -63,7 +63,7 @@ struct RevealView: View {
         VStack(alignment: .leading, spacing: Metrics.s2) {
             Label("THE SEAL — opened", systemImage: "lock.open.fill")
                 .font(EType.label).tracking(2).foregroundStyle(Palette.indigo)
-            Text(store.openedSeal?.hypothesis?.prediction ?? "")
+            Text((store.openedSeal?.hypothesis?.prediction ?? "").echoMarkdown)
                 .font(EType.body).foregroundStyle(Palette.ink).lineSpacing(4)
                 .fixedSize(horizontal: false, vertical: true)
             Text("Locked at question 3 — \(store.total - 3) questions before this reveal.")
@@ -139,7 +139,7 @@ struct FlowChips: View {
     var body: some View {
         HStack(spacing: Metrics.s2) {
             ForEach(items, id: \.self) { t in
-                Text(t).font(EType.label).foregroundStyle(Palette.inkSoft)
+                Text(t.echoMarkdown).font(EType.label).foregroundStyle(Palette.inkSoft)
                     .padding(.horizontal, Metrics.s3).padding(.vertical, 5)
                     .background(Palette.bgRaised).clipShape(Capsule())
                     .overlay(Capsule().stroke(Palette.line, lineWidth: 1))
@@ -155,11 +155,11 @@ struct PortraitCard: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("ECHO").font(EType.label).tracking(6).foregroundStyle(Palette.indigo)
             Spacer(minLength: 0)
-            Text(portrait.archetype)
+            Text(portrait.archetype.echoMarkdown)
                 .font(EType.serif(30, .bold)).foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
             FlowChips(portrait.traits)
-            Text("“\(portrait.quotable)”")
+            Text("“\(portrait.quotable)”".echoMarkdown)
                 .font(EType.serif(19, .semibold)).italic().foregroundStyle(Palette.indigo)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)

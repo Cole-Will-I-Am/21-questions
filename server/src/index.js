@@ -6,7 +6,7 @@ import {
   HttpError, sha256hex, hmacHex, randomToken, randomId,
   verifyAppleIdentityToken, createSession, authPlayer, constantTimeEqual,
 } from "./auth.js";
-import { nextTurn, finalPortrait, sealHypothesis } from "./echo.js";
+import { nextTurn, finalPortrait, sealHypothesis, ECHO_MODEL } from "./echo.js";
 
 const CORS = {
   "access-control-allow-origin": "*",
@@ -221,7 +221,7 @@ async function hSessionGet(req, env, player, id) {
 async function hHealth(req, env) {
   let db = "ok";
   try { await env.DB.prepare("SELECT 1").first(); } catch { db = "down"; }
-  return ok({ ok: true, db, model: "glm-5.2", ts: nowS() });
+  return ok({ ok: true, db, model: ECHO_MODEL, ts: nowS() });
 }
 function hLanding() {
   return new Response("Echo API — the AI that reads who you are. See echo://app.", {
