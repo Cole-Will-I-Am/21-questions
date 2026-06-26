@@ -33,15 +33,17 @@ export async function chat({ model, system, messages, json = false, think = fals
 export async function chatJSON(opts) {
   const base = opts.num_predict ?? 1024;
   let lastRaw = "";
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const raw = await chat({ ...opts, json: true, num_predict: Math.round(base * (attempt ? 1.7 : 1)) });
+  for (let attempt = 0; attempt < 3; attempt++) {
+    // Attempt 0 uses JSON-mode; retries DROP it — reasoning models (gpt-oss, deepseek) can return
+    // empty content under format:json, so fall back to free-form + salvage and give more room.
+    const raw = await chat({ ...opts, json: attempt === 0, num_predict: Math.round(base * (1 + attempt * 0.6)) });
     lastRaw = raw;
     const cleaned = raw.replace(/```(?:json)?/gi, "").trim();
     try { return JSON.parse(cleaned); } catch {}
     const m = cleaned.match(/\{[\s\S]*\}/);
     if (m) { try { return JSON.parse(m[0]); } catch {} }
   }
-  throw new Error("bad JSON from model: " + lastRaw.slice(0, 200));
+  throw new Error("bad JSON from model: " + JSON.stringify(lastRaw.slice(0, 200)));
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

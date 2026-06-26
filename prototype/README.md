@@ -35,6 +35,15 @@ node lineup.mjs                # the Phase 0 bar across all 5 personas
 | `lineup.mjs` | The lineup test (independent judge) + self-rating; prints the Phase 0 result |
 | `ollama.mjs` | Ollama Cloud client (JSON mode, retries) |
 
-## Status
+## Status — Phase 0 PASS ✅
 
-Engine works end to end; single-session reads are specific and seam-probing (e.g. the nurse persona → *"The Triage Operator… her entire hierarchy of people is sorted by usefulness when it counts"*, with the Q3 seal hash-verified). Lineup-test numbers are being measured — that result is the gate for everything after Phase 0.
+Lineup test, 5 personas, independent `deepseek-v4-pro` judge (blind to ground truth):
+
+```
+Lineup accuracy : 5/5 = 100%   (chance = 20%), every match @95% confidence
+Avg self-rating : 4.40/5
+```
+
+The reads are specific enough that a blind third model picks the right person out of a five-way lineup **every time**. Sample portraits in `samples/` (e.g. nurse → *"The Load-Bearing Wall"*, founder → *"The Indispensable Sprinter"*, dev → *"The Reluctant Polisher"*).
+
+**Honest caveat.** The personas are deliberately distinct, which is an easier setting than real humans who cluster. The next rigor steps before over-trusting the number: (a) add near-duplicate "hard" personas (e.g. two anxious creatives) to stress discrimination, and (b) validate with real users. But the defined Phase 0 bar — uncanny *and specific*, provable via the lineup — is met decisively.

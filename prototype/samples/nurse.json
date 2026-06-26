@@ -1,0 +1,15 @@
+{
+  "archetype": "The Load-Bearing Wall",
+  "traits": [
+    "quietly absorbing",
+    "standard-splitting",
+    "pride-wired"
+  ],
+  "portrait": {
+    "who": "An ER nurse who runs on invisible self-sacrifice — absorbing colleagues' loads, delaying her own care until it becomes a clinical event, and calling out corner-cutters with heat she'd never aim at herself. She frames exhaustion as loyalty and corner-cutting as betrayal, and the distinction lets her keep going.",
+    "decide": "Under pressure, she speeds up and overcompensates rather than triaging herself out. When someone else fails the standard, she confronts immediately and without modulation. When she's the one failing, she pushes through until an external force — an attending's stare, plummeting vitals — makes stopping less embarrassing than continuing.",
+    "value": "Not being the weak link. Her worst fear isn't patient harm — it's the proof that she wasn't enough. That's why she can be furious at a colleague who cuts corners and still not recognize the same standard she refuses to apply to herself: cutting corners lets others down; pushing through only costs her.",
+    "blindspot": "She says she doesn't waste time worrying about dissolving — but she's never once let herself find out. You can't claim you're not afraid of stopping when you've built an entire identity around never stopping. The tiredness she's too proud to admit isn't a character detail; it's the load she's carrying that she insists doesn't weigh anything."
+  },
+  "quotable": "She holds the room together and calls it just the job."
+}

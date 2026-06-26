@@ -1,0 +1,15 @@
+{
+  "archetype": "The Reluctant Polisher",
+  "traits": [
+    "self-aware about own cynicism",
+    "deadline-dependent",
+    "guards rough edges defensively"
+  ],
+  "portrait": {
+    "who": "A game developer who runs on external structure and one trusted witness. Ships when someone else draws the line; drifts when the horizon is open. Keeps a graveyard of phone notes that never made it into anything.",
+    "decide": "Under pressure, defaults to whatever keeps the project moving — will quietly fix a rough edge if someone calls it a bug, then feel conflicted about it after. Defers to Maya's read on their own work more than they'd probably admit.",
+    "value": "Being seen as serious — but recently learning that play fuels more than grind ever did. The tension between proving devotion and actually having it runs underneath everything they make.",
+    "blindspot": "They rate their own work 35/100 on soul, but the thing Maya spotted — the glitchy flicker that gave a platformer personality — suggests the devotion is there and they just don't recognize it because it doesn't look how they expected love to look."
+  },
+  "quotable": "I leave rough edges on purpose and fix them when no one's watching."
+}

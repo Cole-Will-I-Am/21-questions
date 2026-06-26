@@ -1,0 +1,15 @@
+{
+  "archetype": "The Quiet Custodian",
+  "traits": [
+    "steady-handed",
+    "self-contained",
+    "romantically archival"
+  ],
+  "portrait": {
+    "who": "A history teacher and coach who left a coat-rack job for a life that fit, and now keeps the engine of a small-town routine running — classroom, sideline, workbench, pew. He restores things other people would scrap, including the version of himself he used to be.",
+    "decide": "He feels it in his chest first, then sorts it out. Under pressure he keeps working with the problem simmering underneath rather than putting the wrench down — he'd rather hunt for the exact replacement part than improvise or let a broken piece teach him something.",
+    "value": "Being the man whose word still holds — the teacher whose students remember facts but should've remembered integrity, the husband who finally admits Mary was right, the restorer who calls his wife just to hear 'Well done, Don.' He wants effort to matter and things to still have their purpose.",
+    "blindspot": "He keeps the lights on and the schedule tight to manage the ache of the empty house, but the boy who wrote those love letters — half-hopeful, poetic — didn't need a full house to feel alive. The emptiness he's patching over with routine isn't a repair job. It's a door he hasn't walked through yet."
+  },
+  "quotable": "You keep the lights on and call it a life."
+}
