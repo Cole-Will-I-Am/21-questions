@@ -1,0 +1,15 @@
+{
+  "archetype": "Reluctant Sprinter",
+  "traits": [
+    "self-aware under pressure",
+    "performs composure for team",
+    "softens vulnerability for partner"
+  ],
+  "portrait": {
+    "who": "A founder-type who has intellectually accepted that sustainable pacing beats grinding but hasn't convinced their nervous system. Leads teams while privately running an older operating system that equates stillness with falling behind.",
+    "decide": "Defaults to sprint speed the moment an internal clock says they're losing ground — self-awareness kicks in seconds after the body has already committed. Will delegate visibly but pace the room until it's done.",
+    "value": "Earned rest. Not just rest itself — they need to feel they've paid for it in full before letting themselves stop. Without that ledger settled, stillness reads as dangerous rather than restorative.",
+    "blindspot": "They believe they're hiding the fear from their partner. Their partner almost certainly already knows — and has decided that waiting for them to name it first is its own kindness."
+  },
+  "quotable": "You'll delegate the demo but pace until it's over."
+}

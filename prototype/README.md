@@ -35,15 +35,15 @@ node lineup.mjs                # the Phase 0 bar across all 5 personas
 | `lineup.mjs` | The lineup test (independent judge) + self-rating; prints the Phase 0 result |
 | `ollama.mjs` | Ollama Cloud client (JSON mode, retries) |
 
-## Status — Phase 0 PASS ✅
+## Status — Phase 0 PASS ✅ (hardened)
 
-Lineup test, 5 personas, independent `deepseek-v4-pro` judge (blind to ground truth):
+Lineup test, independent `deepseek-v4-pro` judge (blind to ground truth):
 
 ```
-Lineup accuracy : 5/5 = 100%   (chance = 20%), every match @95% confidence
-Avg self-rating : 4.40/5
+5 distinct personas         : 5/5 = 100%  (chance 20%)  · avg self-rating 4.40/5
+8 personas, 3 look-alike pairs: 8/8 = 100% (chance 13%) · avg self-rating 4.50/5
 ```
 
-The reads are specific enough that a blind third model picks the right person out of a five-way lineup **every time**. Sample portraits in `samples/` (e.g. nurse → *"The Load-Bearing Wall"*, founder → *"The Indispensable Sprinter"*, dev → *"The Reluctant Polisher"*).
+The hard run adds three **clustered pairs** — two driven founders, two anxious creatives, two lonely older men — each sharing a surface archetype but with a *different inner driver*. Every pair stayed separated at ≥95% confidence (e.g. *"The Indispensable Sprinter"* (output-driven) vs *"Reluctant Sprinter"* (fear-driven)). A blind judge can only do that if the read surfaced the **inner driver, not the archetype** — which is exactly what separates a real portrait from a horoscope. Samples in `samples/`.
 
-**Honest caveat.** The personas are deliberately distinct, which is an easier setting than real humans who cluster. The next rigor steps before over-trusting the number: (a) add near-duplicate "hard" personas (e.g. two anxious creatives) to stress discrimination, and (b) validate with real users. But the defined Phase 0 bar — uncanny *and specific*, provable via the lineup — is met decisively.
+The core bet — uncanny AND specific, provable via the lineup — is met, and it **holds when people cluster**, not just when they're obviously different. Remaining honest gap: real human users (simulated personas, however hard, aren't the final word).

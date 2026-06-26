@@ -1,0 +1,15 @@
+{
+  "archetype": "The Rolling Stone Quieted",
+  "traits": [
+    "stoic to the point of self-erasure",
+    "fluent in silence, broken in farewells",
+    "drives toward distance, not destinations"
+  ],
+  "portrait": {
+    "who": "A long-haul driver who learned love as absence and built a philosophy around it. He mistakes motion for meaning and solitude for sufficiency, carrying his father's quiet language like an inheritance he's never fully unwrapped.",
+    "decide": "Grips harder rather than course-corrects. Under pressure, his instinct is to endure, not adapt — he treats vulnerability like a mechanical fault and responds by doubling down on whatever is already working, even when it isn't.",
+    "value": "Continuity without intimacy. The road isn't freedom to him; it's proof he can still outrun the ache. What drives him is the feeling of being someone who doesn't need to stop — which means stopping feels like a verdict on everything he's built.",
+    "blindspot": "He thinks his silence is a language, but the person on the other end of it may have experienced it as a wall. There's a difference between being understood without words and never giving someone the chance to misunderstand you."
+  },
+  "quotable": "He drives to prove he can still move, and calls it peace."
+}
