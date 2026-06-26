@@ -1,0 +1,11 @@
+{
+  "name": "echo-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Echo Phase 0 — prove the read lands (lineup test)",
+  "scripts": {
+    "session": "node run-session.mjs",
+    "lineup": "node lineup.mjs"
+  }
+}
