@@ -67,6 +67,8 @@ struct QuestionView: View {
             switch turn.answer_type {
             case "chips":  chips(turn.options ?? [])
             case "slider": sliderArea(turn.slider_labels ?? ["", ""])
+            case "yesno":  yesNoArea
+            case "guess":  guessArea
             default:       textArea
             }
         }
@@ -112,6 +114,42 @@ struct QuestionView: View {
             let empty = draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             Button { store.submit(.text(draft)) } label: { continueLabel("Continue") }
                 .buttonStyle(.plain).disabled(empty).opacity(empty ? 0.4 : 1)
+        }
+    }
+
+    // Classic mode — a yes/no question: Yes / No prominent, Sometimes / Unsure secondary.
+    private var yesNoArea: some View {
+        VStack(spacing: Metrics.s2) {
+            HStack(spacing: Metrics.s2) { yesNoButton("Yes", filled: true); yesNoButton("No", filled: true) }
+            HStack(spacing: Metrics.s2) { yesNoButton("Sometimes", filled: false); yesNoButton("Unsure", filled: false) }
+        }
+    }
+    private func yesNoButton(_ t: String, filled: Bool) -> some View {
+        Button { store.submit(.chip(t)) } label: {
+            Text(t).font(filled ? EType.serif(18, .semibold) : EType.body)
+                .foregroundStyle(filled ? .white : Palette.inkSoft)
+                .frame(maxWidth: .infinity).padding(.vertical, filled ? 16 : 12)
+                .background(filled ? Palette.indigo : Palette.bgRaised)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(filled ? .clear : Palette.line, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    // Classic mode — Echo makes a guess: confirm or reject.
+    private var guessArea: some View {
+        VStack(spacing: Metrics.s2) {
+            Button { store.submit(.chip("Yes")) } label: {
+                Text("Yes — that's it!").font(EType.serif(18, .semibold)).foregroundStyle(.white)
+                    .frame(maxWidth: .infinity).padding(.vertical, 16)
+                    .background(Palette.indigo)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            }.buttonStyle(.plain)
+            Button { store.submit(.chip("No")) } label: {
+                Text("Not quite").font(EType.body).foregroundStyle(Palette.inkSoft)
+                    .frame(maxWidth: .infinity).padding(.vertical, 14)
+                    .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(Palette.line, lineWidth: 1))
+            }.buttonStyle(.plain)
         }
     }
 

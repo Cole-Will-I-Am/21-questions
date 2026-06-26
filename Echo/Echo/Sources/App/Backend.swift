@@ -48,8 +48,9 @@ final class Backend {
         return try await send("/v1/account", method: "POST", bodyData: enc(B(deviceId: deviceId, deviceSecret: deviceSecret)))
     }
 
-    func startSession(token: String) async throws -> StartResponse {
-        try await send("/v1/session/start", method: "POST", token: token, bodyData: Data("{}".utf8))
+    func startSession(token: String, mode: String) async throws -> StartResponse {
+        struct B: Encodable { let mode: String }
+        return try await send("/v1/session/start", method: "POST", token: token, bodyData: enc(B(mode: mode)))
     }
 
     func answer(token: String, sessionId: String, answer: String) async throws -> AnswerResponse {

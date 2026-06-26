@@ -68,7 +68,7 @@ function renderTranscript(history) {
 // glm-5.2 emits JSON reliably, but retry once dropping JSON-mode (reasoning models can return empty
 // content under format:json) with more room — same lesson as the prototype/SEER fix.
 async function jsonCall(env, { system, user, num_predict, temperature }) {
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 3; i++) {
     const out = await chatJSON({
       apiKey: env.OLLAMA_API_KEY, model: ECHO_MODEL, system, user,
       schema: i === 0 ? "json" : undefined,
@@ -112,6 +112,61 @@ export async function finalPortrait(env, history) {
       blindspot: String(out.portrait?.blindspot || ""),
     },
     quotable: String(out.quotable || ""),
+  };
+}
+
+// ===========================================================================
+// CLASSIC mode — the traditional game: the player thinks of a thing, Echo guesses it.
+// ===========================================================================
+const CLASSIC_SYSTEM = `You are ECHO, playing the classic game of 21 Questions. The player has thought of ONE
+thing — an object, animal, place, person, food, concept, anything — and kept it secret. Your job: ask yes/no
+questions to narrow it down, then GUESS it, in 21 questions or fewer.
+
+STRATEGY (follow this order — it's how good players win):
+- FIRST ~5 questions: lock the TOP-LEVEL category before drilling into any sub-type. Establish, roughly in
+  this order, which bucket it's in: a living thing (animal / plant / person)? something EDIBLE (food or
+  drink)? a physical object you'd find around a home or outdoors? a place or location? an abstract concept,
+  idea, or activity? Do NOT start guessing specific items until the big category is pinned — the classic
+  blunder is drilling into "objects" and never asking "is it food?" or "is it alive?".
+- THEN narrow inside the category, each question roughly halving what's left.
+- USE every answer; never repeat a question; reason explicitly about what you've ruled in and out.
+- If you get several "No"s in a row, you may be in the WRONG branch — back up and ask a broader question
+  rather than guessing ever-more-obscure items.
+- Keep the common buckets in mind: animals, food & drink, plants, people, places, vehicles, tools, furniture,
+  clothing, electronics, toys, instruments, body parts, natural/celestial things, sports, abstract concepts.
+- Make a GUESS the moment you're reasonably confident — a correct early guess is the best outcome. If a guess
+  is wrong, absorb it and keep narrowing.
+- At most 21 turns; the 21st MUST be a final guess.
+- Voice: warm, playful, a little charmingly cocky. React to surprising answers.
+- The player answers Yes / No / Sometimes / Unsure — treat "Sometimes"/"Unsure" as partial signal.`;
+
+const CLASSIC_CONTRACT = `Return STRICT JSON only, nothing outside it:
+{
+  "reaction": "<one short playful line about their LAST answer; \\"\\" on the first turn>",
+  "kind": "question | guess",
+  "text": "<if kind=question: a single yes/no question. if kind=guess: the thing you're guessing, phrased as a confirmation, e.g. 'Is it a dolphin?'>"
+}
+Use kind="guess" only when you actually want to commit a guess. Otherwise kind="question".`;
+
+export async function classicTurn(env, history, qNumber) {
+  const forceGuess = qNumber >= 21
+    ? `This is turn 21 — the last. kind MUST be "guess": make your single best final guess.`
+    : `You may ask a question or, if confident, make a guess.`;
+  const user = `The yes/no exchange so far (Q = your question/guess, A = the player's answer):\n${renderTranscript(history)}\n\nThis is turn ${qNumber} of 21. ${forceGuess}\nReturn the turn JSON.`;
+  const out = await jsonCall(env, { system: CLASSIC_SYSTEM + "\n\n" + CLASSIC_CONTRACT, user, num_predict: 800, temperature: 0.7 });
+  // Tolerant field reads: under format:json deepseek collapses to {question,type}; free-form gives
+  // the contract's {text,kind}. Accept either so the schema drift can't 503 us.
+  const text = out && (out.text ?? out.question ?? out.guess);
+  if (!out || !text) return null;
+  let kind = String(out.kind ?? out.type ?? "question").toLowerCase();
+  kind = (kind === "guess" || qNumber >= 21) ? "guess" : "question";
+  return {
+    reaction: typeof out.reaction === "string" ? out.reaction : "",
+    question: String(text),
+    answer_type: kind === "guess" ? "guess" : "yesno",   // yesno -> Yes/No/Sometimes/Unsure; guess -> confirm
+    options: null,
+    slider_labels: null,
+    hypothesis: null,
   };
 }
 

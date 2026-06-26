@@ -43,6 +43,7 @@ struct Progress: Decodable, Equatable { let answered: Int; let total: Int }
 
 struct StartResponse: Decodable {
     let sessionId: String
+    let mode: String?
     let total: Int
     let turn: Turn
 }
@@ -53,6 +54,7 @@ struct AnswerResponse: Decodable {
     let turn: Turn?
     let seal: Seal?
     let portrait: Portrait?
+    let outcome: String?        // classic mode: "solved" | "stumped"
 }
 
 struct PortraitBody: Decodable, Equatable {

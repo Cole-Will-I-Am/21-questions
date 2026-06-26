@@ -6,11 +6,13 @@ struct RootView: View {
         ZStack {
             Palette.bgGradient.ignoresSafeArea()
             switch store.screen {
-            case .loading:  LoadingView()
-            case .coldOpen: ColdOpenView()
-            case .question: QuestionView()
-            case .seal:     SealView()
-            case .reveal:   RevealView()
+            case .loading:        LoadingView()
+            case .coldOpen:       ColdOpenView()
+            case .classicReady:   ClassicReadyView()
+            case .question:       QuestionView()
+            case .seal:           SealView()
+            case .reveal:         RevealView()
+            case .classicOutcome: ClassicOutcomeView()
             }
         }
         .animation(.easeInOut(duration: 0.4), value: store.screen)

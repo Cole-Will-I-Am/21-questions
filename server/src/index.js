@@ -6,7 +6,7 @@ import {
   HttpError, sha256hex, hmacHex, randomToken, randomId,
   verifyAppleIdentityToken, createSession, authPlayer, constantTimeEqual,
 } from "./auth.js";
-import { nextTurn, finalPortrait, sealHypothesis, ECHO_MODEL } from "./echo.js";
+import { nextTurn, finalPortrait, sealHypothesis, classicTurn, ECHO_MODEL } from "./echo.js";
 
 const CORS = {
   "access-control-allow-origin": "*",
@@ -134,16 +134,18 @@ async function insertTurn(env, sid, n, turn, now) {
 
 async function hSessionStart(req, env, player) {
   if (!(await rateLimit(env, req, "start", 60, 3600))) return fail(429, "rate_limited");
-  const turn = await nextTurn(env, [], 1);
+  const body = await readJson(req);
+  const mode = body.mode === "classic" ? "classic" : "mirror";
+  const turn = mode === "classic" ? await classicTurn(env, [], 1) : await nextTurn(env, [], 1);
   if (!turn) return fail(503, "echo_unavailable");
   const id = randomId("g_");
   const now = nowS();
   await env.DB.prepare(
     `INSERT INTO echo_session(id,player_id,mode,q_index,status,started_at,updated_at)
-     VALUES(?,?,'mirror',0,'active',?,?)`
-  ).bind(id, player.id, now, now).run();
+     VALUES(?,?,?,0,'active',?,?)`
+  ).bind(id, player.id, mode, now, now).run();
   await insertTurn(env, id, 1, turn, now);
-  return ok({ sessionId: id, total: 21, turn: turnView(1, turn) });
+  return ok({ sessionId: id, mode, total: 21, turn: turnView(1, turn) });
 }
 
 async function hAnswer(req, env, player) {
@@ -165,7 +167,27 @@ async function hAnswer(req, env, player) {
   const answered = current.turn_number;            // questions answered so far
   const history = historyFrom(turns);
 
-  // final question answered -> write the portrait, open the seal
+  // CLASSIC mode: Echo is guessing the player's secret. A confirmed guess wins; running out at 21 = stumped.
+  if (sess.mode === "classic") {
+    const wasGuess = current.answer_type === "guess";
+    const correct = /^\s*(yes|correct|that'?s it|got it|right|yep|yeah)\b/i.test(answer);
+    if (wasGuess && correct) {
+      await env.DB.prepare("UPDATE echo_session SET status='solved', q_index=?, updated_at=? WHERE id=?").bind(answered, now, sid).run();
+      return ok({ done: true, mode: "classic", outcome: "solved", progress: { answered, total: 21 } });
+    }
+    if (answered >= 21) {                            // the forced 21st guess was wrong
+      await env.DB.prepare("UPDATE echo_session SET status='stumped', q_index=?, updated_at=? WHERE id=?").bind(answered, now, sid).run();
+      return ok({ done: true, mode: "classic", outcome: "stumped", progress: { answered, total: 21 } });
+    }
+    const nextNum = answered + 1;
+    const turn = await classicTurn(env, history, nextNum);
+    if (!turn) return fail(503, "echo_unavailable");
+    await insertTurn(env, sid, nextNum, turn, now);
+    await env.DB.prepare("UPDATE echo_session SET q_index=?, updated_at=? WHERE id=?").bind(answered, now, sid).run();
+    return ok({ done: false, mode: "classic", progress: { answered, total: 21 }, turn: turnView(nextNum, turn) });
+  }
+
+  // MIRROR mode: final question answered -> write the portrait, open the seal
   if (answered >= 21) {
     const portrait = await finalPortrait(env, history);
     if (!portrait) return fail(503, "echo_unavailable");
