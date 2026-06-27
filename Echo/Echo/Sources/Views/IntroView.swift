@@ -31,7 +31,7 @@ struct IntroView: View {
 
             TabView(selection: $page) {
                 ForEach(Array(pages.enumerated()), id: \.offset) { i, p in
-                    VStack(alignment: .leading, spacing: Metrics.s5) {
+                    VStack(alignment: .leading, spacing: Metrics.s4) {
                         Spacer()
                         Image(systemName: p.icon)
                             .font(.system(size: 44, weight: .light))
@@ -59,7 +59,7 @@ struct IntroView: View {
                         .animation(.spring(response: 0.3), value: page)
                 }
             }
-            .padding(.bottom, Metrics.s5)
+            .padding(.bottom, Metrics.s4)
 
             Button {
                 Haptics.tap()
