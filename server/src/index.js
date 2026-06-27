@@ -245,10 +245,63 @@ async function hHealth(req, env) {
   try { await env.DB.prepare("SELECT 1").first(); } catch { db = "down"; }
   return ok({ ok: true, db, model: ECHO_MODEL, ts: nowS() });
 }
+function htmlPage(body) {
+  return new Response(
+    `<!doctype html><html lang="en"><head><meta charset="utf-8">` +
+    `<meta name="viewport" content="width=device-width,initial-scale=1"><title>Echo</title>` +
+    `<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;` +
+    `background:#0a0a12;color:#eaeaf0;max-width:680px;margin:0 auto;padding:48px 22px;line-height:1.65}` +
+    `h1{font-size:30px;margin:.1em 0;letter-spacing:.01em}h2{margin-top:1.7em;font-size:18px}` +
+    `a{color:#9d7bff}.muted{color:#9a9aa9}ul{padding-left:20px}` +
+    `.tag{display:inline-block;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#9d7bff;margin-bottom:14px}` +
+    `.bars{display:flex;gap:6px;margin:18px 0 26px}.bars span{height:7px;width:42px;border-radius:2px}</style>` +
+    `</head><body>${body}</body></html>`,
+    { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=3600", ...CORS } }
+  );
+}
+const BARS = `<div class="bars"><span style="background:#6179ff"></span><span style="background:#8c61f2"></span><span style="background:#c56bff"></span></div>`;
+
 function hLanding() {
-  return new Response("Echo API — the AI that reads who you are. See echo://app.", {
-    headers: { "content-type": "text/plain", ...CORS },
-  });
+  return htmlPage(`<div class="tag">Echo</div>${BARS}
+    <h1>Echo — 21 Questions, inverted</h1>
+    <p class="muted">It's not the game where an AI guesses your word. It's the game where the AI reads <em>who you are</em> — twenty-one adaptive questions, then a portrait that's specific enough to pick you out of a crowd. (The classic word-guessing game is in here too.)</p>
+    <p><a href="/privacy">Privacy Policy</a> &middot; <a href="/support">Support</a> &middot; <a href="/terms">Terms of Use</a></p>`);
+}
+
+function hPrivacy() {
+  return htmlPage(`<h1>Echo — Privacy Policy</h1><p class="muted">Last updated 27 June 2026.</p>
+    <p>Echo is a 21-questions game. We collect only what's needed to run the game and keep your sessions on your account. We show no ads, use no third-party analytics or advertising trackers, and never sell your data.</p>
+    <h2>What we collect</h2><ul>
+      <li><b>Your gameplay</b> — the answers you give during a session and the portrait Echo writes from them, so you can revisit your sessions. In the self-portrait mode these answers are personal reflections about you; treat them as you would any personal note.</li>
+      <li><b>An account identifier</b> — if you play anonymously, a random identifier generated on your device; if you Sign in with Apple, a one-way hashed identifier derived from Apple. We never receive or store your real name or email.</li>
+    </ul>
+    <h2>What we do not collect</h2>
+    <p>No name, email, phone number, contacts, location, photos, health data, or advertising identifier. No cross-app or cross-site tracking. Your answers are never used to build an advertising profile.</p>
+    <h2>How we use it</h2>
+    <p>Only to operate the game: run your session, generate and store your portrait, and let you return to past sessions on your account.</p>
+    <h2>Where it is stored</h2><p>On Cloudflare, our infrastructure provider, processing the data on our behalf. Sessions are sent over encrypted connections.</p>
+    <h2>Your choices</h2>
+    <p>You can play entirely anonymously without signing in. You can delete your account and everything tied to it at any time from <b>Settings &rarr; Delete account</b> in the app, or by emailing us — this removes your sessions, answers, and portraits.</p>
+    <h2>Children</h2><p>Echo is not directed to children under 13 and collects no personal information beyond what is described above.</p>
+    <h2>Contact</h2><p>Questions or deletion requests: <a href="mailto:cole@manticthink.com">cole@manticthink.com</a>.</p>`);
+}
+
+function hSupport() {
+  return htmlPage(`<h1>Echo — Support</h1>
+    <p>Need a hand, found a bug, or have a feature idea? We'd love to hear from you.</p>
+    <h2>Contact</h2><p>Email <a href="mailto:cole@manticthink.com">cole@manticthink.com</a> and we'll get back to you.</p>
+    <h2>Common questions</h2><ul>
+      <li><b>How do I play?</b> Press start and answer Echo's questions honestly — in the self-portrait mode it's reading you; in the classic mode it's guessing your secret word.</li>
+      <li><b>Do I need an account?</b> No. You can play anonymously; Sign in with Apple is optional and only keeps your sessions across devices.</li>
+      <li><b>How do I delete my data?</b> Settings &rarr; Delete account, or email us.</li>
+    </ul>
+    <p class="muted"><a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Use</a></p>`);
+}
+
+function hTerms() {
+  return htmlPage(`<h1>Echo — Terms of Use</h1><p class="muted">Last updated 27 June 2026.</p>
+    <p>Echo is provided as-is, for personal entertainment. Its questions and portraits are AI-generated reflections, not advice, diagnosis, or fact — don't rely on them for any important decision. Be kind: don't abuse, automate, or attempt to disrupt the service. We may update or discontinue the game at any time. By playing, you agree to these terms.</p>
+    <p>Contact: <a href="mailto:cole@manticthink.com">cole@manticthink.com</a>.</p>`);
 }
 
 export default {
@@ -260,6 +313,9 @@ export default {
     try {
       if (path === "/healthz") return hHealth(req, env);
       if (path === "/" && method === "GET") return hLanding();
+      if (path === "/privacy" && method === "GET") return hPrivacy();
+      if (path === "/support" && method === "GET") return hSupport();
+      if (path === "/terms" && method === "GET") return hTerms();
 
       if (path === "/v1/account" && method === "POST") return hAccount(req, env);
       if (path === "/v1/account" && method === "DELETE") return hDeleteAccount(req, env, await requireAuth(req, env));

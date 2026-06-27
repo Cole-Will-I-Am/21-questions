@@ -7,6 +7,14 @@ struct ColdOpenView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Metrics.s6) {
+            HStack {
+                Spacer()
+                Button { Haptics.tap(); store.showIntro() } label: {
+                    Label("How it works", systemImage: "questionmark.circle")
+                        .font(EType.small).foregroundStyle(Palette.inkSoft)
+                }
+            }
+            .opacity(appear ? 1 : 0)
             Spacer()
             Text("ECHO")
                 .font(EType.label).tracking(6).foregroundStyle(Palette.indigo)

@@ -2,7 +2,7 @@ import SwiftUI
 
 @MainActor
 final class EchoStore: ObservableObject {
-    enum Screen: Equatable { case loading, coldOpen, classicReady, question, seal, reveal, classicOutcome }
+    enum Screen: Equatable { case loading, intro, coldOpen, classicReady, question, seal, reveal, classicOutcome }
 
     @Published var screen: Screen = .loading
     @Published var mode = "mirror"               // mirror | classic
@@ -28,8 +28,26 @@ final class EchoStore: ObservableObject {
         Task {
             await ensureAccount()
             try? await Task.sleep(for: .seconds(0.9))     // let the cold-open line breathe
-            if screen == .loading { withAnimation(.easeInOut(duration: 0.5)) { screen = .coldOpen } }
+            if screen == .loading {
+                withAnimation(.easeInOut(duration: 0.5)) { screen = Self.seenIntro ? .coldOpen : .intro }
+            }
         }
+    }
+
+    // First-launch intro / how-to. Shown once, then reachable again from the cold open.
+    static var seenIntro: Bool {
+        get { UserDefaults.standard.bool(forKey: "echo.seenIntro") }
+        set { UserDefaults.standard.set(newValue, forKey: "echo.seenIntro") }
+    }
+    func showIntro() { withAnimation(.easeInOut(duration: 0.4)) { screen = .intro } }
+    func dismissIntro() { Self.seenIntro = true; withAnimation(.easeInOut(duration: 0.5)) { screen = .coldOpen } }
+
+    /// Abandon the current game and return to the start, clearing the in-flight session.
+    func quitGame() {
+        sessionId = nil; turn = nil; answered = 0
+        portrait = nil; openedSeal = nil; sealHash = nil; outcome = nil; lastGuess = nil; pendingGuess = nil
+        errorText = nil
+        withAnimation(.easeInOut(duration: 0.4)) { screen = .coldOpen }
     }
 
     private func ensureAccount() async {

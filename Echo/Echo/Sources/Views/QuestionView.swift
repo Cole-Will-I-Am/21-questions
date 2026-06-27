@@ -6,6 +6,7 @@ struct QuestionView: View {
     @State private var showQuestion = false
     @State private var sliderVal: Double = 50
     @State private var draft = ""
+    @State private var showQuit = false
     @FocusState private var focused: Bool
 
     var body: some View {
@@ -43,11 +44,21 @@ struct QuestionView: View {
         .padding(.vertical, Metrics.s6)
         .onAppear { sequence(store.turn) }
         .onChange(of: store.turn?.n) { _, _ in sequence(store.turn) }
+        .alert("Leave this game?", isPresented: $showQuit) {
+            Button("Leave", role: .destructive) { store.quitGame() }
+            Button("Keep playing", role: .cancel) { }
+        } message: {
+            Text("Your progress in this round won't be saved.")
+        }
     }
 
     private var header: some View {
         VStack(spacing: Metrics.s3) {
-            HStack {
+            HStack(spacing: Metrics.s3) {
+                Button { Haptics.tap(); showQuit = true } label: {
+                    Image(systemName: "chevron.left").font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.inkSoft)
+                }
+                .accessibilityLabel("Leave game")
                 Text("ECHO").font(EType.label).tracking(4).foregroundStyle(Palette.indigo)
                 Spacer()
                 Text("\(store.turn?.n ?? 0) / \(store.total)").font(EType.mono).foregroundStyle(Palette.inkSoft)

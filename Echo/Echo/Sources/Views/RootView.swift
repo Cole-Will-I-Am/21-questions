@@ -7,6 +7,7 @@ struct RootView: View {
             Palette.bgGradient.ignoresSafeArea()
             switch store.screen {
             case .loading:        LoadingView()
+            case .intro:          IntroView()
             case .coldOpen:       ColdOpenView()
             case .classicReady:   ClassicReadyView()
             case .question:       QuestionView()
